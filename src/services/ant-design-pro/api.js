@@ -3,9 +3,11 @@
 /* eslint-disable */
 import { request } from 'umi';
 /** 获取当前的用户 GET /api/login/currentUser */
-export async function currentUser(token, options) {
-  // const initialInfo = (useModel && useModel('@@initialState'));
-  // debugger;
+export async function currentUser(token, id, options) {
+  let user = getCurrentUser();
+  if (token?.length > 0) setCurrentUser({ token: token, id: id });
+  else if (user?.token?.length > 0) token = user?.token;
+
   return request('/api/login/currentUser', {
     method: 'GET',
     headers: {
@@ -17,9 +19,14 @@ export async function currentUser(token, options) {
 /** 退出登录接口 POST /api/login/outLogin */
 
 export async function outLogin(options) {
-  debugger;
+  let user = getCurrentUser();
+  if (user != null) localStorage.removeItem('user');
   return request('/api/login/outLogin', {
     method: 'POST',
+    headers: {
+      Authorization: 'Bearer ' + user?.token,
+    },
+    data: { userId: user?.id },
     ...(options || {}),
   });
 }
@@ -75,4 +82,12 @@ export async function removeRule(options) {
     method: 'DELETE',
     ...(options || {}),
   });
+}
+
+export function setCurrentUser(data) {
+  localStorage.setItem('user', JSON.stringify(data));
+}
+
+export function getCurrentUser() {
+  return JSON.parse(localStorage.getItem('user'));
 }

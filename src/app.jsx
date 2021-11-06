@@ -16,10 +16,10 @@ export const initialStateConfig = {
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 
-export async function getInitialState(token) {
-  const fetchUserInfo = async (token) => {
+export async function getInitialState(token, id) {
+  const fetchUserInfo = async (token, id) => {
     try {
-      const msg = await queryCurrentUser(token);
+      const msg = await queryCurrentUser(token, id);
       return msg.data;
     } catch (error) {
       history.push(loginPath);
@@ -29,7 +29,7 @@ export async function getInitialState(token) {
   }; // 如果是登录页面，不执行
 
   if (history.location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo(token);
+    const currentUser = await fetchUserInfo(token, id);
     return {
       fetchUserInfo,
       token,

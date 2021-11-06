@@ -33,11 +33,16 @@ const Login = () => {
   const { initialState, setInitialState } = useModel('@@initialState');
   const intl = useIntl();
 
-  const fetchUserInfo = async (token) => {
-    const userInfo = await initialState?.fetchUserInfo?.(token);
+  const fetchUserInfo = async (msg) => {
+    const userInfo = await initialState?.fetchUserInfo?.(msg?.token, msg?.id);
 
     if (userInfo) {
-      await setInitialState((s) => ({ ...s, currentUser: userInfo, token: token }));
+      await setInitialState((s) => ({
+        ...s,
+        currentUser: userInfo,
+        token: msg?.token,
+        id: msg?.id,
+      }));
     }
   };
 
@@ -54,7 +59,7 @@ const Login = () => {
           defaultMessage: '登录成功！',
         });
         message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo(msg?.token);
+        await fetchUserInfo(msg);
         /** 此方法会跳转到 redirect 参数所在的位置 */
 
         if (!history) return;
