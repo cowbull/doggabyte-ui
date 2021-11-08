@@ -26,7 +26,7 @@ const getAccess = () => {
 
 export default {
   // 支持值为 Object 和 Array
-  'GET /api/login/currentUser': (req, res) => {
+  'GET /api/account/currentUser': (req, res) => {
     if (!getAccess()) {
       res.status(401).send({
         data: {
@@ -115,7 +115,7 @@ export default {
       address: 'Sidney No. 1 Lake Park',
     },
   ],
-  'POST /api/login/account': async (req, res) => {
+  'POST /api/account/signin': async (req, res) => {
     const { password, username, type } = req.body;
     await waitTime(2000);
 
@@ -156,7 +156,7 @@ export default {
     });
     access = 'guest';
   },
-  'POST /api/login/outLogin': (req, res) => {
+  'POST /api/account/outLogin': (req, res) => {
     access = '';
     res.send({
       data: {},

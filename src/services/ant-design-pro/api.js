@@ -2,13 +2,13 @@
 
 /* eslint-disable */
 import { request } from 'umi';
-/** 获取当前的用户 GET /api/login/currentUser */
+/** 获取当前的用户 GET /api/account/currentUser */
 export async function currentUser(token, id, options) {
   let user = getCurrentUser();
   if (token?.length > 0) setCurrentUser({ token: token, id: id });
   else if (user?.token?.length > 0) token = user?.token;
 
-  return request('/api/login/currentUser', {
+  return request('/api/account/currentUser', {
     method: 'GET',
     headers: {
       Authorization: 'Bearer ' + token,
@@ -16,24 +16,21 @@ export async function currentUser(token, id, options) {
     ...(options || {}),
   });
 }
-/** 退出登录接口 POST /api/login/outLogin */
+/** 退出登录接口 POST /api/account/outLogin */
 
 export async function outLogin(options) {
   let user = getCurrentUser();
-  if (user != null) localStorage.removeItem('user');
-  return request('/api/login/outLogin', {
+  if (user != null) removeCurrentUser();
+  return request('/api/account/outLogin', {
     method: 'POST',
-    headers: {
-      Authorization: 'Bearer ' + user?.token,
-    },
     data: { userId: user?.id },
     ...(options || {}),
   });
 }
-/** 登录接口 POST /api/login/account */
+/** 登录接口 POST /api/account/signin */
 
 export async function login(body, options) {
-  return request('/api/login/account', {
+  return request('/api/account/signin', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -90,4 +87,8 @@ export function setCurrentUser(data) {
 
 export function getCurrentUser() {
   return JSON.parse(localStorage.getItem('user'));
+}
+
+export function removeCurrentUser() {
+  return localStorage.removeItem('user');
 }
